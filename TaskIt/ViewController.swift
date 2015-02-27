@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    var taskArray:[Any] = []
+    var taskArray:[TaskModel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,10 +32,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     // called when a viewController reappears as the main viewController presented to the screen AFTER initial load.
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-
-//        func sortByDate(#taskOne:TaskModel, taskTwo:TaskModel) -> Bool{
-//            return taskOne.date.timeIntervalSince1970 < taskTwo.date.timeIntervalSince1970
-//        }
 
         taskArray.sorted { (taskOne:TaskModel, taskTwo:TaskModel) -> Bool in
             return taskOne.date.timeIntervalSince1970 < taskTwo.date.timeIntervalSince1970
