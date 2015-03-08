@@ -19,6 +19,7 @@
 		45AB546C1A73E22B008E7842 /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB546B1A73E22B008E7842 /* TaskTableViewCell.swift */; };
 		45AB546E1A75841B008E7842 /* TaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB546D1A75841B008E7842 /* TaskModel.swift */; };
 		45AB54701A758CB0008E7842 /* TaskDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB546F1A758CB0008E7842 /* TaskDetailViewController.swift */; };
+		45B9678C1AACD84F006656C7 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45B9678B1AACD84F006656C7 /* CoreData.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		45AB546B1A73E22B008E7842 /* TaskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 		45AB546D1A75841B008E7842 /* TaskModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
 		45AB546F1A758CB0008E7842 /* TaskDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskDetailViewController.swift; sourceTree = "<group>"; };
+		45B9678B1AACD84F006656C7 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45B9678C1AACD84F006656C7 /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,6 +111,7 @@
 		459C0EEF1A6F36C800E3A4CF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				45B9678B1AACD84F006656C7 /* CoreData.framework */,
 				459C0EF01A6F36C800E3A4CF /* Info.plist */,
 			);
 			name = "Supporting Files";

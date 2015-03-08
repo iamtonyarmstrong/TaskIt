@@ -20,24 +20,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        let date1 = Date.from(year: 2015, month: 01, day: 30)
-        let date3 = Date.from(year: 2015, month: 01, day: 15)
-        let date2 = Date.from(year: 2015, month: 02, day: 01)
-        let date4 = Date.from(year: 2015, month: 04, day: 15)
-        let date5 = Date.from(year: 2014, month: 12, day: 23)
-
-        let taskOne:TaskModel = TaskModel(task:"Study French", subtask:"Verbs", date:date1, isCompleted: false)
-        let taskTwo:TaskModel = TaskModel(task:"Study Calculus", subtask:"Differentials", date:date2, isCompleted: false)
-        let taskThree:TaskModel = TaskModel(task:"Go grocery shopping", subtask:"Publix", date:date3, isCompleted: false)
-        let taskFour:TaskModel = TaskModel(task:"Go somewhere", subtask:"Keys", date:date4, isCompleted: false)
-        let taskFive:TaskModel = TaskModel(task: "Old Task", subtask: "Stuff", date: date5, isCompleted: true)
-
-        self.incompleteTaskArray = [taskOne, taskTwo, taskThree, taskFour]
-        self.completeTaskArray = [taskFive]
-
-        baseArray.append(self.incompleteTaskArray)
-        baseArray.append(self.completeTaskArray)
-
 
     }
 
