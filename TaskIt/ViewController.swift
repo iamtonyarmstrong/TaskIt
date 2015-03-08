@@ -65,7 +65,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell: TaskTableViewCell = tableView.dequeueReusableCellWithIdentifier("cell") as! TaskTableViewCell
+        var cell: TaskTableViewCell = tableView.dequeueReusableCellWithIdentifier("cell") as TaskTableViewCell
 
         let task = self.baseArray[indexPath.section][indexPath.row] as TaskModel
 
@@ -117,7 +117,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     // Pass the selected object to the new view controller.
 
         if (segue.identifier == "showTaskDetail"){
-            let detailVC:TaskDetailViewController = segue.destinationViewController as! TaskDetailViewController
+            let detailVC:TaskDetailViewController = segue.destinationViewController as TaskDetailViewController
             detailVC.mainVC = self
 
             //create the section and row
@@ -128,7 +128,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let thisTask = self.baseArray[indexSection!][indexRow!] as TaskModel
             detailVC.detailTaskObject = thisTask
         } else if(segue.identifier == "showAddTask"){
-            let addTaskVC: AddNewTaskViewController = segue.destinationViewController as! AddNewTaskViewController
+            let addTaskVC: AddNewTaskViewController = segue.destinationViewController as AddNewTaskViewController
             addTaskVC.mainVC = self
         }
 

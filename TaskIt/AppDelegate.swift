@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
 
-        let modelURL = NSBundle.mainBundle().URLForResource("TaskIt", withExtension: "momd")!
+        let modelURL = NSBundle.mainBundle().URLForResource("TaskItModel", withExtension: "momd")! //this must match the name of the xcdatamodeld file
 
         return NSManagedObjectModel(contentsOfURL: modelURL)!
         }()
