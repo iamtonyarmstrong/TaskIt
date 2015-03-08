@@ -99,6 +99,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         performSegueWithIdentifier("showTaskDetail", sender: self)
     }
 
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+
+        let thisTask = self.baseArray[indexPath.section][indexPath.row]     //grab the selected item from the array
+        var newTask:TaskModel
+
+        //handle moving TaskModels from completed to uncompleted and back
+        if indexPath.section == 0 {
+            newTask = TaskModel(task: thisTask.task, subtask: thisTask.subtask, date: thisTask.date, isCompleted: true)
+            self.baseArray[1].append(newTask)       //add item to complete array
+
+        } else {
+            newTask = TaskModel(task: thisTask.task, subtask: thisTask.subtask, date: thisTask.date, isCompleted: false)
+            self.baseArray[0].append(newTask)       //add item to complete array
+        }
+
+        self.baseArray[indexPath.section].removeAtIndex(indexPath.row)  //remove item from incomplete array
+
+        self.tableView.reloadData()
+
+    }
+
+    //MARK: - Helper Functions
+
     @IBAction func addButtonTapped(sender: AnyObject) {
         self.performSegueWithIdentifier("showAddTask", sender: self)
     }
