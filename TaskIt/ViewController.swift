@@ -11,21 +11,33 @@ import UIKit
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    var taskArray:[TaskModel] = []
+
+    var incompleteTaskArray:[TaskModel] = []
+    var completeTaskArray:[TaskModel] = []
+    var baseArray:[[TaskModel]] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
         let date1 = Date.from(year: 2015, month: 01, day: 30)
+        let date3 = Date.from(year: 2015, month: 01, day: 15)
         let date2 = Date.from(year: 2015, month: 02, day: 01)
-        let date3 = Date.from(year: 2015, month: 02, day: 15)
+        let date4 = Date.from(year: 2015, month: 04, day: 15)
+        let date5 = Date.from(year: 2014, month: 12, day: 23)
 
-        let taskOne:TaskModel = TaskModel(task:"Study French", subtask:"Verbs", date:date1)
-        let taskTwo:TaskModel = TaskModel(task:"Study Calculus", subtask:"Differentials", date:date2)
-        let taskThree:TaskModel = TaskModel(task:"Go grocery shopping", subtask:"Publix", date:date3)
+        let taskOne:TaskModel = TaskModel(task:"Study French", subtask:"Verbs", date:date1, isCompleted: false)
+        let taskTwo:TaskModel = TaskModel(task:"Study Calculus", subtask:"Differentials", date:date2, isCompleted: false)
+        let taskThree:TaskModel = TaskModel(task:"Go grocery shopping", subtask:"Publix", date:date3, isCompleted: false)
+        let taskFour:TaskModel = TaskModel(task:"Go somewhere", subtask:"Keys", date:date4, isCompleted: false)
+        let taskFive:TaskModel = TaskModel(task: "Old Task", subtask: "Stuff", date: date5, isCompleted: true)
 
-        self.taskArray = [taskOne, taskTwo, taskThree]
+        self.incompleteTaskArray = [taskOne, taskTwo, taskThree, taskFour]
+        self.completeTaskArray = [taskFive]
+
+        baseArray.append(self.incompleteTaskArray)
+        baseArray.append(self.completeTaskArray)
+
 
     }
 
@@ -33,9 +45,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-        taskArray.sorted { (taskOne:TaskModel, taskTwo:TaskModel) -> Bool in
+        self.baseArray[0] = baseArray[0].sorted { (taskOne:TaskModel, taskTwo:TaskModel) -> Bool in
             return taskOne.date.timeIntervalSince1970 < taskTwo.date.timeIntervalSince1970
         }
+
 
         self.tableView.reloadData()
     }
@@ -49,17 +62,30 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK: - TableView Methods
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return self.baseArray.count
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.taskArray.count
+        return self.baseArray[section].count
+    }
+
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 25.0
+    }
+
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0{
+            return "To Do"
+        } else {
+            return "Completed"
+        }
+
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell: TaskTableViewCell = tableView.dequeueReusableCellWithIdentifier("cell") as! TaskTableViewCell
 
-        let task = self.taskArray[indexPath.row] as! TaskModel
+        let task = self.baseArray[indexPath.section][indexPath.row] as TaskModel
 
         cell.taskLabel.text = task.task
         cell.subTaskLabel.text = task.subtask
@@ -88,8 +114,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if (segue.identifier == "showTaskDetail"){
             let detailVC:TaskDetailViewController = segue.destinationViewController as! TaskDetailViewController
             detailVC.mainVC = self
+
+            //create the section and row
+            let indexSection = self.tableView.indexPathForSelectedRow()?.section
             let indexRow = self.tableView.indexPathForSelectedRow()?.row
-            let thisTask = self.taskArray[indexRow!]as! TaskModel
+
+            //use the section and row to access the actual TaskModel object
+            let thisTask = self.baseArray[indexSection!][indexRow!] as TaskModel
             detailVC.detailTaskObject = thisTask
         } else if(segue.identifier == "showAddTask"){
             let addTaskVC: AddNewTaskViewController = segue.destinationViewController as! AddNewTaskViewController

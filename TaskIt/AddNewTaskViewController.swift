@@ -18,6 +18,7 @@ class AddNewTaskViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var addDatePicker: UIDatePicker!
     @IBOutlet weak var saveTaskButton: UIButton!
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -34,8 +35,8 @@ class AddNewTaskViewController: UIViewController, UITextFieldDelegate {
     }
 
     @IBAction func saveTaskButtonTapped(sender: UIButton) {
-        let task:TaskModel = TaskModel(task:self.addTaskTextField.text, subtask: self.addSubtaskTextField.text, date: self.addDatePicker.date)
-        mainVC.taskArray.append(task)
+        let task:TaskModel = TaskModel(task:self.addTaskTextField.text, subtask: self.addSubtaskTextField.text, date: self.addDatePicker.date, isCompleted:false)
+        mainVC.incompleteTaskArray.append(task)
         self.dismissViewControllerAnimated(true, completion: nil)
         
     }

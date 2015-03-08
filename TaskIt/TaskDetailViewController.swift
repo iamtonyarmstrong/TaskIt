@@ -14,6 +14,7 @@ class TaskDetailViewController: UIViewController {
     @IBOutlet weak var subTaskTextField: UITextField!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var cancelButton: UIBarButtonItem!
+    @IBOutlet weak var statusLabel: UILabel!
 
     var detailTaskObject:TaskModel!
     var mainVC:ViewController!
@@ -26,6 +27,20 @@ class TaskDetailViewController: UIViewController {
         self.taskTextField.text = self.detailTaskObject.task
         self.subTaskTextField.text = self.detailTaskObject.subtask
         self.datePicker.date = self.detailTaskObject.date
+
+        var statusTextColor:UIColor
+        var statusText = ""
+
+        if self.detailTaskObject.isCompleted == false {
+            statusTextColor = UIColor.redColor()
+            statusText = "INCOMPLETE"
+        } else {
+            statusTextColor = UIColor.greenColor()
+            statusText = "COMPLETE"
+        }
+
+        self.statusLabel.textColor = statusTextColor
+        self.statusLabel.text = "Status: " + statusText
     }
 
     override func didReceiveMemoryWarning() {
@@ -42,10 +57,10 @@ class TaskDetailViewController: UIViewController {
 
     @IBAction func doneButtonTapped(sender: AnyObject) {
         // create a new Task using the values from this VC
-        var task: TaskModel = TaskModel(task: self.taskTextField.text, subtask: self.subTaskTextField.text, date: self.datePicker.date)
+        var task: TaskModel = TaskModel(task: self.taskTextField.text, subtask: self.subTaskTextField.text, date: self.datePicker.date, isCompleted:false)
 
         // update the task in the main ViewController.
-        mainVC.taskArray[mainVC.tableView.indexPathForSelectedRow()!.row] = task
+        mainVC.incompleteTaskArray[mainVC.tableView.indexPathForSelectedRow()!.row] = task
 
         self.navigationController?.popViewControllerAnimated(true)
     }
