@@ -7,18 +7,24 @@
 //
 
 import UIKit
+import CoreData
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var tableView: UITableView!
 
-    var incompleteTaskArray:[TaskModel] = []
-    var completeTaskArray:[TaskModel] = []
-    var baseArray:[[TaskModel]] = []
+    let moc = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext!
+    var fetchedResultsController:NSFetchedResultsController = NSFetchedResultsController()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+
+        // Get the fetchedResultsController from the helper function below and perform a fetch operation
+        fetchedResultsController = getFetchResultsController()
+        fetchedResultsController.delegate = self
+        fetchedResultsController.performFetch(nil)
 
 
     }
@@ -27,12 +33,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-        self.baseArray[0] = baseArray[0].sorted { (taskOne:TaskModel, taskTwo:TaskModel) -> Bool in
+
+
+        /* self.baseArray[0] = baseArray[0].sorted { (taskOne:TaskModel, taskTwo:TaskModel) -> Bool in
             return taskOne.date.timeIntervalSince1970 < taskTwo.date.timeIntervalSince1970
         }
-
-
         self.tableView.reloadData()
+        */
+    
     }
 
     override func didReceiveMemoryWarning() {
@@ -44,11 +52,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK: - TableView Methods
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return self.baseArray.count
+        return fetchedResultsController.sections!.count
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.baseArray[section].count
+        return fetchedResultsController.sections![section].numberOfObjects
     }
 
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -67,10 +75,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell: TaskTableViewCell = tableView.dequeueReusableCellWithIdentifier("cell") as TaskTableViewCell
 
-        let task = self.baseArray[indexPath.section][indexPath.row] as TaskModel
+        let task = fetchedResultsController.objectAtIndexPath(indexPath) as TaskModel
 
         cell.taskLabel.text = task.task
-        cell.subTaskLabel.text = task.subtask
+        cell.subTaskLabel.text = task.subTask
         cell.dateLabel.text = Date.toString(date: task.date)
 
         return cell
@@ -83,22 +91,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
 
-        let thisTask = self.baseArray[indexPath.section][indexPath.row]     //grab the selected item from the array
-        var newTask:TaskModel
+        var thisTask:TaskModel = fetchedResultsController.objectAtIndexPath(indexPath) as TaskModel     //grab the selected item from CoreData
+
 
         //handle moving TaskModels from completed to uncompleted and back
         if indexPath.section == 0 {
-            newTask = TaskModel(task: thisTask.task, subtask: thisTask.subtask, date: thisTask.date, isCompleted: true)
-            self.baseArray[1].append(newTask)       //add item to complete array
-
+            thisTask.isCompleted = true
         } else {
-            newTask = TaskModel(task: thisTask.task, subtask: thisTask.subtask, date: thisTask.date, isCompleted: false)
-            self.baseArray[0].append(newTask)       //add item to complete array
+            thisTask.isCompleted = false
         }
 
-        self.baseArray[indexPath.section].removeAtIndex(indexPath.row)  //remove item from incomplete array
-
-        self.tableView.reloadData()
+        (UIApplication.sharedApplication().delegate as AppDelegate).saveContext()
 
     }
 
@@ -109,6 +112,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
 
+    // Create a fetch request and sort Descriptor
+    func taskFetchRequest() -> NSFetchRequest{
+        let fetchRequest = NSFetchRequest(entityName: "TaskModel")
+        let completedDescriptor = NSSortDescriptor(key: "isCompleted", ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "date", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor, completedDescriptor]
+
+        return fetchRequest
+    }
+
+
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        self.tableView.reloadData()
+    }
+
+    // 
+    func getFetchResultsController() -> NSFetchedResultsController {
+       fetchedResultsController = NSFetchedResultsController(fetchRequest: taskFetchRequest(), managedObjectContext: moc, sectionNameKeyPath: "isCompleted", cacheName: nil)
+
+        return fetchedResultsController
+
+    }
+
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -118,18 +144,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         if (segue.identifier == "showTaskDetail"){
             let detailVC:TaskDetailViewController = segue.destinationViewController as TaskDetailViewController
-            detailVC.mainVC = self
 
             //create the section and row
-            let indexSection = self.tableView.indexPathForSelectedRow()?.section
-            let indexRow = self.tableView.indexPathForSelectedRow()?.row
+            let indexPath = self.tableView.indexPathForSelectedRow()?
 
             //use the section and row to access the actual TaskModel object
-            let thisTask = self.baseArray[indexSection!][indexRow!] as TaskModel
+            let thisTask = fetchedResultsController.objectAtIndexPath(indexPath!) as TaskModel
             detailVC.detailTaskObject = thisTask
         } else if(segue.identifier == "showAddTask"){
             let addTaskVC: AddNewTaskViewController = segue.destinationViewController as AddNewTaskViewController
-            addTaskVC.mainVC = self
+        
         }
 
     }

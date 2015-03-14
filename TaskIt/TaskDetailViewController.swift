@@ -17,7 +17,7 @@ class TaskDetailViewController: UIViewController {
     @IBOutlet weak var statusLabel: UILabel!
 
     var detailTaskObject:TaskModel!
-    var mainVC:ViewController!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +25,7 @@ class TaskDetailViewController: UIViewController {
         // Do any additional setup after loading the view.
         println(self.detailTaskObject!.task)
         self.taskTextField.text = self.detailTaskObject.task
-        self.subTaskTextField.text = self.detailTaskObject.subtask
+        self.subTaskTextField.text = self.detailTaskObject.subTask
         self.datePicker.date = self.detailTaskObject.date
 
         var statusTextColor:UIColor
@@ -56,11 +56,13 @@ class TaskDetailViewController: UIViewController {
     }
 
     @IBAction func doneButtonTapped(sender: AnyObject) {
-        // create a new Task using the values from this VC
-        var task: TaskModel = TaskModel(task: self.taskTextField.text, subtask: self.subTaskTextField.text, date: self.datePicker.date, isCompleted:false)
+        let appDelegate = (UIApplication.sharedApplication().delegate as AppDelegate)
+        self.detailTaskObject.task = self.taskTextField.text
+        self.detailTaskObject.subTask = self.subTaskTextField.text
+        self.detailTaskObject.date = self.datePicker.date
+        self.detailTaskObject.isCompleted = detailTaskObject.isCompleted
 
-        // update the task in the main ViewController.
-        mainVC.incompleteTaskArray[mainVC.tableView.indexPathForSelectedRow()!.row] = task
+        appDelegate.saveContext()
 
         self.navigationController?.popViewControllerAnimated(true)
     }

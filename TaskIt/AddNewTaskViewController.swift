@@ -11,7 +11,6 @@ import CoreData
 
 class AddNewTaskViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
 
-    var mainVC:ViewController!
 
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var addTaskTextField: UITextField!
@@ -58,6 +57,10 @@ class AddNewTaskViewController: UIViewController, UITextFieldDelegate, UITextVie
         var error:NSError? = nil
 
         var results:NSArray = managedObjectContext!.executeFetchRequest(request, error: &error)!
+
+        for res in results {
+            println(res)
+        }
 
         self.dismissViewControllerAnimated(true, completion: nil)
         
