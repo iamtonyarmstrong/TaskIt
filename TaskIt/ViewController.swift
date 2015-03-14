@@ -13,6 +13,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     @IBOutlet weak var tableView: UITableView!
 
+    // Get a managedObjectContext - remember: this is the "scratch pad" that we save with saveContext()
+    // And create a fetchedResultsController - this will bring the results back from the Persistent store
     let moc = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext!
     var fetchedResultsController:NSFetchedResultsController = NSFetchedResultsController()
 
@@ -33,8 +35,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-
-
+        // Commented out because Core Data makes sorting with a closure unnecessary
         /* self.baseArray[0] = baseArray[0].sorted { (taskOne:TaskModel, taskTwo:TaskModel) -> Bool in
             return taskOne.date.timeIntervalSince1970 < taskTwo.date.timeIntervalSince1970
         }
@@ -75,6 +76,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell: TaskTableViewCell = tableView.dequeueReusableCellWithIdentifier("cell") as TaskTableViewCell
 
+        // Simply return the task from the Store. Using objectAtIndexPath - super easy
         let task = fetchedResultsController.objectAtIndexPath(indexPath) as TaskModel
 
         cell.taskLabel.text = task.task
@@ -127,7 +129,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.tableView.reloadData()
     }
 
-    // 
+    // Create a fetchedResultsController. The sectionNameKeyPath is what allows the controller to know how many sections. 
+    // Since isCompleted can have two states: complete or not complete (true or false - boolean) it creates two sections for us.
     func getFetchResultsController() -> NSFetchedResultsController {
        fetchedResultsController = NSFetchedResultsController(fetchRequest: taskFetchRequest(), managedObjectContext: moc, sectionNameKeyPath: "isCompleted", cacheName: nil)
 
